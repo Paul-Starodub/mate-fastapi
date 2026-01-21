@@ -1,5 +1,5 @@
-from datetime import date
-from sqlalchemy import ForeignKey
+from datetime import date, datetime
+from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from base import Base
 
@@ -24,3 +24,11 @@ class Book(Base):
 
     def __repr__(self) -> str:
         return f"<Book {self.title}>"
+
+
+class Tag(Base):
+    name: Mapped[str] = mapped_column(unique=True)
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now(), default=datetime.now)
+
+    def __repr__(self) -> str:
+        return f"<Tag {self.name}>"
