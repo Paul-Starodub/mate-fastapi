@@ -28,6 +28,7 @@ class Book(Base):
 
 class Tag(Base):
     name: Mapped[str] = mapped_column(unique=True)
+    description: Mapped[str | None]
     created_at: Mapped[datetime] = mapped_column(server_default=func.now(), default=datetime.now)
 
     def __repr__(self) -> str:
