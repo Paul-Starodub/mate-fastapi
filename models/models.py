@@ -1,7 +1,7 @@
-from datetime import date
-from sqlalchemy import ForeignKey
+from datetime import date, datetime
+from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from base import Base
+from .base import Base
 
 
 class Author(Base):
@@ -21,6 +21,17 @@ class Book(Base):
     author_id: Mapped[int] = mapped_column(ForeignKey("authors.id"))
 
     author: Mapped["Author"] = relationship(back_populates="books")
+    tags: Mapped[list["Tag"]] = relationship(secondary="book_tag_association", back_populates="books")
 
     def __repr__(self) -> str:
         return f"<Book {self.title}>"
+
+
+class Tag(Base):
+    name: Mapped[str] = mapped_column(unique=True)
+    description: Mapped[str | None]
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now(), default=datetime.now)
+    books: Mapped[list["Book"]] = relationship(secondary="book_tag_association", back_populates="tags")
+
+    def __repr__(self) -> str:
+        return f"<Tag {self.name}>"
